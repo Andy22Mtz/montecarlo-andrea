@@ -6,8 +6,6 @@ from scipy.stats import norm
 import plotly.graph_objects as go
 import opstrat as op
 from datetime import datetime, timedelta
-from signal import signal, SIGPIPE, SIG_DFL
-signal(SIGPIPE,SIG_DFL)
 
 st.title("MONTECARLO SIMULATIONS")
 st.caption("Andrea Martínez | 0233220")
