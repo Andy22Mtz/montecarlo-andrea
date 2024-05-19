@@ -327,9 +327,12 @@ elif selected_tab == "Option Prices":
         # Datos de Yahoo Finance
         data = pd.DataFrame()
         for t in tickers:
-            mydata = yf.download(t, start="2014-01-01")[["Adj Close"]]
-            data = pd.concat([data, mydata.rename(columns={"Adj Close": t})], axis=1)
-
+            try:
+                mydata = yf.download(t, start="2014-01-01")[["Adj Close"]]
+                data = pd.concat([data, mydata.rename(columns={"Adj Close": t})], axis=1)
+            except Exception as e:
+                print("Error fetching data:", e)
+                
         # Input variables
         S0 = data.iloc[-1, 0]
         S0_formateado = f"{S0:.2f}"  # Current stock price
