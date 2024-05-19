@@ -1,7 +1,7 @@
 streamlit
 numpy
 pandas
-yfinance
+yfinance[2024-05-19 21:13:52.812708]
 scipy
 plotly
 opstrat
