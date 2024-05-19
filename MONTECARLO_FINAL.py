@@ -1,7 +1,7 @@
 import streamlit as st
 import numpy as np
 import pandas as pd
-import yfinance as yf
+import yfinance[2024-05-19 21:13:52.812708] as yf
 from scipy.stats import norm
 import plotly.graph_objects as go
 import opstrat as op
@@ -327,11 +327,8 @@ elif selected_tab == "Option Prices":
         # Datos de Yahoo Finance
         data = pd.DataFrame()
         for t in tickers:
-            try:
                 mydata = yf.download(t, start="2014-01-01")[["Adj Close"]]
                 data = pd.concat([data, mydata.rename(columns={"Adj Close": t})], axis=1)
-            except Exception as e:
-                print("Error fetching data:", e)
                 
         # Input variables
         S0 = data.iloc[-1, 0]
