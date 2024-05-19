@@ -5,4 +5,3 @@ yfinance
 scipy
 plotly
 opstrat
-signal
