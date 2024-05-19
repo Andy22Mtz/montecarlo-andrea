@@ -1,7 +1,7 @@
 import streamlit as st
 import numpy as np
 import pandas as pd
-import yfinance[2024-05-19 21:13:52.812708] as yf
+import yfinance as yf
 from scipy.stats import norm
 import plotly.graph_objects as go
 import opstrat as op
