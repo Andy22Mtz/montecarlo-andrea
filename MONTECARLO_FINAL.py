@@ -261,7 +261,7 @@ elif selected_tab == "Option Prices":
 
     st.header("Options :arrow_heading_down:")
     st.subheader("Black-Scholes-Merton Method")
-    st.markdown(":black_circle: The Black-Scholes-Merton formula helps us calculate the price of a European call option, which can only be exercised on the expiration date.")
+    st.markdown(":black_circle: The Black-Scholes-Merton formula helps us calculate the price of a European call/put option, which can only be exercised on the expiration date.")
 
     # Formulas
     st.latex(r"""
@@ -356,29 +356,35 @@ elif selected_tab == "Option Prices":
             return (np.log(S / K) + (r - stdev ** 2) * T) / (stdev * np.sqrt(T))
 
         # Function to calculate Black-Scholes-Merton price
-        def BSM(S, K, r, stdev, T):
+        def BSM_call(S, K, r, stdev, T):
             return (S * norm.cdf(d1(S, K, r, stdev, T))) - (K * np.exp(-r * T) * norm.cdf(d2(S, K, r, stdev, T)))
+
+            # Function to calculate Black-Scholes-Merton put price
+        def BSM_put(S, K, r, stdev, T):
+            return (K * np.exp(-r * T) * norm.cdf(-d2(S, K, r, stdev, T))) - (S * norm.cdf(-d1(S, K, r, stdev, T)))
 
         # Calculate d1, d2, and Call Option price using Black-Scholes-Merton method
         d1_result = d1(S0, K, r, stdev, T)
         d2_result = d2(S0, K, r, stdev, T)
-        BSM_result = BSM(S0, K, r, stdev, T)
+        BSM_call_result = BSM_call(S0, K, r, stdev, T)
+        BSM_put_result = BSM_put(S0, K, r, stdev, T)
 
         # Display results
         st.markdown(f":red_circle: **Stock Price** de {tickers}: {S0_formateado}")
         st.markdown(f"**Standard Deviation** of log returns: {stdev:.3f}")
         st.markdown(f"**d1**: {d1_result:.3f}")
         st.markdown(f"**d2**: {d2_result:.3f}")
-        st.markdown(f"### :dollar: **Black-Scholes-Merton Option Price**: {BSM_result:.2f}")
+        st.markdown(f"### :dollar: **Black-Scholes-Merton CALL Option Price**: {BSM_call_result:.2f}")
+        st.markdown(f"### :dollar: **Black-Scholes-Merton PUT Option Price**: {BSM_put_result:.2f}")
 
         # Explicación
         with st.expander("What am I getting and how will it serve me in the future?", expanded=True):
             st.write(f"""
-            By calculating the current price of the underlying asset and the price of the call option, we are obtaining important information to make financial decisions.
+            By calculating the current price of the underlying asset and the price of the call/put option, we are obtaining important information to make financial decisions.
 
             - **<span style="color:green">Current price of the asset:</span>** This is the current price of the underlying asset (**{ticker_input}**), which can fluctuate in the market. Knowing this price allows you to evaluate the current value of your investment and make informed decisions about buying, selling, or holding the asset.
 
-            - **<span style="color:green">Price of the call option:</span>** This is the theoretical price that you would have to **pay right now to acquire a call option** on the underlying asset, with a specified strike price and expiration date. This price is calculated using the *Black-Scholes model*, which takes into account various market factors. Knowing the price of the call option allows you to evaluate the cost of acquiring this financial contract and decide if it is a suitable investment for your financial goals.
+            - **<span style="color:green">Price of the call option:</span>** This is the theoretical price that you would have to **pay right now to acquire a call/put option** on the underlying asset, with a specified strike price and expiration date. This price is calculated using the *Black-Scholes model*, which takes into account various market factors. Knowing the price of the call option allows you to evaluate the cost of acquiring this financial contract and decide if it is a suitable investment for your financial goals.
 
             In the future, this information will be useful for making strategic decisions in the options and stocks market. For example, you could compare the price of the call option with the current price of the asset to determine if the option is overvalued or undervalued relative to the underlying asset. This information could also be used to plan hedging or speculation strategies in the options market.
 
@@ -403,7 +409,7 @@ elif selected_tab == "Option Prices":
 
     """)
 
-        op.single_plotter(spot=S0, strike=K, op_type='p', tr_type='b', op_pr=BSM_result, spot_range=40)
+        op.single_plotter(spot=S0, strike=K, op_type='p', tr_type='b', op_pr=BSM_put_result, spot_range=40)
         st.pyplot()
 
         #Long Call Option:
@@ -418,7 +424,7 @@ elif selected_tab == "Option Prices":
         """)
 
 
-        op.single_plotter(spot=S0, strike=K, op_type='c', tr_type='b', op_pr=BSM_result, spot_range=40)
+        op.single_plotter(spot=S0, strike=K, op_type='c', tr_type='b', op_pr=BSM_call_result, spot_range=40)
         st.pyplot()
 
         st.divider()
@@ -450,8 +456,8 @@ elif selected_tab == "Option Prices":
 
                 """)
 
-                op_1 = {'op_type':'c', 'strike': K+20, 'tr_type':'s', 'op_pr': BSM_result}
-                op_2 = {'op_type':'p', 'strike': K-20, 'tr_type':'s', 'op_pr': BSM_result}
+                op_1 = {'op_type':'c', 'strike': K+20, 'tr_type':'s', 'op_pr': BSM_call_result}
+                op_2 = {'op_type':'p', 'strike': K-20, 'tr_type':'s', 'op_pr': BSM_put_result}
                 op.multi_plotter(spot = S0, spot_range=70, op_list=[op_1,op_2])
                 st.pyplot()
 
@@ -472,8 +478,8 @@ elif selected_tab == "Option Prices":
 
                 """)
 
-                op_1 = {'op_type': 'c', 'strike': K + 20, 'tr_type': 'b', 'op_pr': BSM_result}
-                op_2 = {'op_type': 'p', 'strike': K - 20, 'tr_type': 'b', 'op_pr': BSM_result}
+                op_1 = {'op_type': 'c', 'strike': K + 20, 'tr_type': 'b', 'op_pr': BSM_call_result}
+                op_2 = {'op_type': 'p', 'strike': K - 20, 'tr_type': 'b', 'op_pr': BSM_put_result}
                 op.multi_plotter(spot=S0, spot_range=70, op_list=[op_1, op_2])
                 st.pyplot()
                 
@@ -493,8 +499,8 @@ elif selected_tab == "Option Prices":
                 - **Risk**: Limited to the total premiums paid for both options.
 
                 """)
-                op_1 = {'op_type': 'c', 'strike': K, 'tr_type': 'b', 'op_pr': BSM_result}
-                op_2 = {'op_type': 'p', 'strike': K, 'tr_type': 'b', 'op_pr': BSM_result}
+                op_1 = {'op_type': 'c', 'strike': K, 'tr_type': 'b', 'op_pr': BSM_call_result}
+                op_2 = {'op_type': 'p', 'strike': K, 'tr_type': 'b', 'op_pr': BSM_put_result}
                 op.multi_plotter(spot=S0, spot_range=70, op_list=[op_1, op_2])
                 st.pyplot()
                 
@@ -514,10 +520,10 @@ elif selected_tab == "Option Prices":
                 - **Risk**: Limited to the difference between the strike prices of the bought and sold options minus the net premium received.
 
                 """)
-                op_1 = {'op_type': 'p', 'strike': K - 20, 'tr_type': 'b', 'op_pr': BSM_result*0.8}
-                op_2 = {'op_type': 'p', 'strike': K - 10, 'tr_type': 's', 'op_pr': BSM_result*0.9}
-                op_3 = {'op_type': 'c', 'strike': K + 10, 'tr_type': 's', 'op_pr': BSM_result*1.1}
-                op_4 = {'op_type': 'c', 'strike': K + 20, 'tr_type': 'b', 'op_pr': BSM_result*1.2}
+                op_1 = {'op_type': 'p', 'strike': K - 20, 'tr_type': 'b', 'op_pr': BSM_put_result*0.8}
+                op_2 = {'op_type': 'p', 'strike': K - 10, 'tr_type': 's', 'op_pr': BSM_put_result*0.9}
+                op_3 = {'op_type': 'c', 'strike': K + 10, 'tr_type': 's', 'op_pr': BSM_call_result*1.1}
+                op_4 = {'op_type': 'c', 'strike': K + 20, 'tr_type': 'b', 'op_pr': BSM_call_result*1.2}
 
                 op_list=[op_1, op_2, op_3, op_4]
                 op.multi_plotter(spot=S0, spot_range=30, op_list=op_list)
