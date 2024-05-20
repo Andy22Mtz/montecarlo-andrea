@@ -520,10 +520,10 @@ elif selected_tab == "Option Prices":
                 - **Risk**: Limited to the difference between the strike prices of the bought and sold options minus the net premium received.
 
                 """)
-                op_1 = {'op_type': 'p', 'strike': K - 20, 'tr_type': 'b', 'op_pr': BSM_put_result*0.8}
-                op_2 = {'op_type': 'p', 'strike': K - 10, 'tr_type': 's', 'op_pr': BSM_put_result*0.9}
-                op_3 = {'op_type': 'c', 'strike': K + 10, 'tr_type': 's', 'op_pr': BSM_call_result*1.1}
-                op_4 = {'op_type': 'c', 'strike': K + 20, 'tr_type': 'b', 'op_pr': BSM_call_result*1.2}
+                op_1 = {'op_type': 'c', 'strike': K + 5, 'tr_type': 's', 'op_pr': BSM_call_result*1.5}
+                op_2 = {'op_type': 'c', 'strike': K + 10, 'tr_type': 'b', 'op_pr': BSM_call_result*1.2}
+                op_3 = {'op_type': 'p', 'strike': K - 5, 'tr_type': 's', 'op_pr': BSM_put_result*0.75}
+                op_4 = {'op_type': 'p', 'strike': K - 10, 'tr_type': 'b', 'op_pr': BSM_put_result*0.9}
 
                 op_list=[op_1, op_2, op_3, op_4]
                 op.multi_plotter(spot=S0, spot_range=30, op_list=op_list)
